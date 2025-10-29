@@ -2,8 +2,6 @@
 
 import { RefCallback, useState } from "react";
 import styled from "styled-components";
-import cn from "classnames/bind";
-import styles from "./TextInput.module.css";
 
 interface TextInputProps {
   type: "text" | "password" | "number" | "tel" | "email";
@@ -17,8 +15,7 @@ interface TextInputProps {
   ref?: RefCallback<HTMLInputElement> | null;
 }
 
-const cx = cn.bind(styles);
-
+const InputWrapper = styled.div``;
 const StyledInput = styled.input``;
 const VisibilityToggleButton = styled.button``;
 const ErrorMessage = styled.p``;
@@ -40,7 +37,7 @@ const TextInput = ({
     setInputType(inputType === "password" ? "text" : "password");
   };
   return (
-    <div className={cx("InputWrapper", className)}>
+    <InputWrapper className={className}>
       <StyledInput
         onChange={onChange}
         type={inputType}
@@ -56,7 +53,7 @@ const TextInput = ({
         ></VisibilityToggleButton>
       )}
       {isError && <ErrorMessage>{errorMessage}</ErrorMessage>}
-    </div>
+    </InputWrapper>
   );
 };
 
