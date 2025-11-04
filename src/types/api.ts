@@ -1,0 +1,57 @@
+// API 공통 응답 타입
+export interface ApiResponse<T = any> {
+  code: string;
+  message: string;
+  data?: T;
+}
+
+// 로그인 요청 타입
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+// 로그인 응답 타입
+export interface LoginResponse {
+  code: string;
+  message: string;
+  emp_id: number;
+  accessToken: string;
+  refreshToken: string;
+  role?: string;
+}
+
+// 사원등록 요청 타입
+export interface EmployeeRegisterRequest {
+  email: string;
+  password: string;
+  emp_nm: string;
+  birth_date: string;
+  hire_date: string;
+  dept_id: string;
+  grade_id: string;
+  photo: string;
+}
+
+// 사원등록 응답 타입
+export interface EmployeeRegisterResponse {
+  code: string;
+  message: string;
+}
+
+// 사원 정보 타입
+export interface Employee {
+  emp_id?: number;
+  email?: string;
+  emp_nm?: string;
+  birth_date?: string;
+  hire_date?: string;
+  dept_id?: string;
+  grade_id?: string;
+  photo?: string;
+}
+
+// 사원 전체 조회 응답 타입
+export interface EmployeesResponse {
+  employees: Employee[];
+}
