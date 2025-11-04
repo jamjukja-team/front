@@ -1,5 +1,5 @@
 import apiClient from "./ApiClient";
-import { LoginRequest, LoginResponse, ApiResponse } from "@/types/api";
+import { LoginRequest, LoginResponse } from "@/types/api";
 
 /**
  * 로그인 API
