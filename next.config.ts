@@ -14,6 +14,9 @@ const API_URL = getApiUrl();
 
 const nextConfig: NextConfig = {
   /* config options here */
+  compiler : {
+    styledComponents: true,
+  },
   async rewrites() {
     return [
       {
