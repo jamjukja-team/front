@@ -4,6 +4,7 @@ import styled from "styled-components";
 import Sidebar from "@/components/Layout/Sidebar";
 import { useState } from "react";
 import { CloseIcon, HamburgerIcon } from "@/utils/icons";
+import { useAuthHydrated } from "@/hooks/useAuthHydrated";
 
 const LayoutWrapper = styled.div`
   display: flex;
@@ -14,7 +15,7 @@ const LayoutWrapper = styled.div`
 
 const SidebarContainer = styled.aside<{ $isOpen: boolean }>`
   background-color: var(--color-background);
-  z-index: 200;
+  z-index: 100;
   box-shadow: 2px 0 2px rgba(0, 0, 0, 0.2);
   position: fixed;
 
@@ -70,6 +71,11 @@ const HamburgerButton = styled.button`
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
    const [isOpen, setIsOpen] = useState(false);
+  const ready = useAuthHydrated(); // persist 복원 상태 확인
+
+   if (!ready) {
+    return null; // 복원 전에는 아무것도 렌더링하지 않음(혹은 로딩 스피너) 
+   }
   return (
     // 전체
     <LayoutWrapper>

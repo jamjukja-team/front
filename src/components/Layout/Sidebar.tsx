@@ -4,6 +4,7 @@ import styled from "styled-components";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { CalendarIcon, ClockIcon, FileTextIcon, UserIcon } from "@/utils/icons";
+import { useAuthStore } from "@/stores/authStore";
 
 const Aside = styled.aside`
   display: flex;
@@ -64,7 +65,7 @@ const SubList = styled.div`
   gap: 4px; /* space-y-1 */
 `;
 
-const NavItem = styled(Link)<{ $active?: boolean }>`
+const NavItem = styled(Link) <{ $active?: boolean }>`
   display: block;
   padding: 8px 12px;     
   font-size: 0.875rem;  
@@ -132,6 +133,7 @@ const LogoutBtn = styled.button`
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const isAdmin = useAuthStore((s) => s.isAdmin);
 
   const isActive = (path: string) => {
     if (path === "/" && pathname === "/") return true;
@@ -185,21 +187,27 @@ export default function Sidebar() {
         </SubList>
 
         {/* 사원 관리 */}
-        <SectionRow style={{ marginTop: 16 }}>
-          <UserIcon />
-          <SectionTitle>사원 관리</SectionTitle>
-        </SectionRow>
-        <SubList>
-          <NavItem href="/register" $active={isActive("/register")}>
-            사원 등록
-          </NavItem>
-          <NavItem
-            href="/employees/1"
-            $active={pathname.startsWith("/employees/") && !pathname.includes("/register")}
-          >
-            사원 조회
-          </NavItem>
-        </SubList>
+        {
+          isAdmin && (
+            <>
+              <SectionRow style={{ marginTop: 16 }}>
+                <UserIcon />
+                <SectionTitle>사원 관리</SectionTitle>
+              </SectionRow>
+              <SubList>
+                <NavItem href="/register" $active={isActive("/register")}>
+                  사원 등록
+                </NavItem>
+                <NavItem
+                  href="/employees/1"
+                  $active={pathname.startsWith("/employees/") && !pathname.includes("/register")}
+                >
+                  사원 조회
+                </NavItem>
+              </SubList>
+            </>
+          )
+        }
       </Nav>
 
       {/* User Profile */}
