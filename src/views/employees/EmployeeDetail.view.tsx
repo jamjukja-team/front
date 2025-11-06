@@ -7,6 +7,7 @@ import Button from "@/components/Button/Button";
 import DeactivateDialog from "@/components/Dialog/DeactivateDialog";
 import ResendInviteDialog from "@/components/Dialog/ResendInviteDialog";
 import ResignDialog from "@/components/Dialog/ResignDialog";
+import EditEmployeeDialog from "@/components/Dialog/EditEmployeeDialog";
 import { Employee } from "@/types/api";
 import { AccountCircleIcon } from "@/utils/icons";
 
@@ -197,6 +198,11 @@ const EmployeeDetailView = ({ employee }: EmployeeDetailViewProps) => {
     console.log("초대 메일 재발송:", employee?.email);
   };
 
+  const handleEdit = (data: Partial<Employee>) => {
+    // TODO: 사원 정보 수정 API 호출
+    console.log("정보 수정:", employee?.emp_id, data);
+  };
+
   if (!employee) {
     return (
       <Container>
@@ -313,6 +319,13 @@ const EmployeeDetailView = ({ employee }: EmployeeDetailViewProps) => {
         isOpen={isResignModalOpen}
         onClose={() => setIsResignModalOpen(false)}
         onConfirm={handleResign}
+      />
+
+      <EditEmployeeDialog
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onConfirm={handleEdit}
+        employee={employee}
       />
     </Container>
   );
