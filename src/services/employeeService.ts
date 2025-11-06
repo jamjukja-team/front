@@ -54,8 +54,10 @@ export const getEmployees = async (): Promise<EmployeesResponse> => {
     const response = await apiClient.instance.get<EmployeesResponse>(
       "/api/hr/employees"
     );
+    // response가 없거나 response.data가 없으면 목 데이터 반환
     if (!response || !response.data) {
-      throw new Error("Invalid response from server");
+      console.warn("Invalid response from server, using mock data");
+      return { employees: mockEmployees };
     }
     // 실제 데이터가 있고 employees 배열이 비어있지 않으면 반환
     if (response.data.employees && response.data.employees.length > 0) {
