@@ -7,16 +7,26 @@ interface ButtonProps {
   onClick?: () => void;
   onSubmit?: () => void;
   children?: React.ReactNode;
+  bg? : string;
+  full?: boolean;
+  color?: string;
 }
 
-const StyledButton = styled.button`
-  width: 100%;
-  padding: 14px 24px;
+const StyledButton = styled.button<{ $bg?: string, $full?: boolean; $color?: string}>`
+   width: ${({ $full }) => ($full ? "100%" : "auto")};
+  padding: 8px 18px;
   font-size: 16px;
   font-weight: 600;
   line-height: 1.5;
-  color: var(--color-background);
-  background-color: var(--color-primary);
+  color: ${({ $color }) =>
+      $color === "white" ? "#fff" :
+      $color === "black" ? "#000" :
+      $color || "#fff"};
+
+  background-color: ${({ $bg }) =>
+      $bg === "primary" ? "#00C2C4" :
+      $bg === "danger" ? "#F26B63" :
+      $bg || "#00C2C4"};
   border: none;
   border-radius: 8px;
   cursor: pointer;

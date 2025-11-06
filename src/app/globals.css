@@ -90,12 +90,14 @@ textarea:not([rows]) {
 
 /* 전역 스타일 */
 :root {
-  --color-primary: #2563eb;
-  --color-primary-hover: #1d4ed8;
+  --color-primary: #00C2C4;
+  --color-primary-hover: #0B898A;
+  --color-primary-active : #0B898A;
   --color-text: #1f2937;
   --color-text-secondary: #6b7280;
   --color-border: #e5e7eb;
   --color-error: #ef4444;
+  --color-danger: #F26B63;
   --color-background: #ffffff;
   --color-gray-50: #f9fafb;
   --color-gray-100: #f3f4f6;
