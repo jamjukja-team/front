@@ -2,6 +2,7 @@
 
 import styled from "styled-components";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Button from "@/components/Button/Button";
 import EmployeeTable from "@/components/Table/EmployeeTable";
@@ -97,6 +98,7 @@ const PaginationSection = styled.div`
 `;
 
 const EmployeesView = ({ initialEmployees = [] }: EmployeesViewProps) => {
+  const router = useRouter();
   const [employees, setEmployees] = useState<Employee[]>(initialEmployees);
   const [filteredEmployees, setFilteredEmployees] = useState<Employee[]>(initialEmployees);
   const [loading, setLoading] = useState(false);
@@ -182,7 +184,11 @@ const EmployeesView = ({ initialEmployees = [] }: EmployeesViewProps) => {
 
   const handleEmployeeClick = (employee: Employee) => {
     // 상세 페이지로 이동
-    window.location.href = `/employees/${employee.emp_id}`;
+    if (employee.emp_id) {
+      router.push(`/employees/${employee.emp_id}`);
+    } else {
+      console.error("Employee ID is missing:", employee);
+    }
   };
 
   return (

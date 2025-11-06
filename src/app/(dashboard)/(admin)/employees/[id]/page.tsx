@@ -14,9 +14,12 @@ export default async function EmployeeDetailPage({
   let employee = null;
   try {
     const response = await getEmployees();
-    employee = response.employees.find(
-      (emp) => emp.emp_id?.toString() === params.id
-    );
+    employee = response.employees.find((emp) => {
+      // 여러 방식으로 비교 시도
+      const empIdStr = emp.emp_id?.toString();
+      const paramId = params.id;
+      return empIdStr === paramId || emp.emp_id === Number(paramId);
+    });
   } catch (error) {
     console.error("Failed to fetch employee:", error);
   }

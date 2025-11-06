@@ -1,7 +1,8 @@
 "use client";
 
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import Button from "@/components/Button/Button";
 import DeactivateDialog from "@/components/Dialog/DeactivateDialog";
@@ -9,6 +10,7 @@ import ResendInviteDialog from "@/components/Dialog/ResendInviteDialog";
 import ResignDialog from "@/components/Dialog/ResignDialog";
 import EditEmployeeDialog from "@/components/Dialog/EditEmployeeDialog";
 import { Employee } from "@/types/api";
+import { getEmployees } from "@/services/employeeService";
 import { AccountCircleIcon } from "@/utils/icons";
 
 interface EmployeeDetailViewProps {
@@ -177,11 +179,37 @@ const ResendLink = styled(Link)`
   }
 `;
 
-const EmployeeDetailView = ({ employee }: EmployeeDetailViewProps) => {
+const EmployeeDetailView = ({ employee: initialEmployee }: EmployeeDetailViewProps) => {
+  const params = useParams();
+  const [employee, setEmployee] = useState<Employee | undefined>(initialEmployee);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeactivateModalOpen, setIsDeactivateModalOpen] = useState(false);
   const [isResignModalOpen, setIsResignModalOpen] = useState(false);
   const [isResendInviteModalOpen, setIsResendInviteModalOpen] = useState(false);
+  const [loading, setLoading] = useState(!initialEmployee);
+
+  // 서버에서 데이터를 못 찾았을 경우 클라이언트에서 다시 시도
+  useEffect(() => {
+    if (!initialEmployee && params?.id) {
+      const fetchEmployee = async () => {
+        setLoading(true);
+        try {
+          const response = await getEmployees();
+          const found = response.employees.find((emp) => {
+            const empIdStr = emp.emp_id?.toString();
+            const paramId = params.id as string;
+            return empIdStr === paramId || emp.emp_id === Number(paramId);
+          });
+          setEmployee(found);
+        } catch (error) {
+          console.error("Failed to fetch employee:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchEmployee();
+    }
+  }, [initialEmployee, params?.id]);
 
   const handleDeactivate = () => {
     // TODO: 비활성화 API 호출
@@ -203,10 +231,26 @@ const EmployeeDetailView = ({ employee }: EmployeeDetailViewProps) => {
     console.log("정보 수정:", employee?.emp_id, data);
   };
 
+  if (loading) {
+    return (
+      <Container>
+        <div>로딩 중...</div>
+      </Container>
+    );
+  }
+
   if (!employee) {
     return (
       <Container>
-        <div>사원 정보를 찾을 수 없습니다.</div>
+        <BackLink href="/employees">← 사원 상세</BackLink>
+        <div style={{ padding: "40px", textAlign: "center" }}>
+          <p style={{ fontSize: "18px", color: "var(--color-text)", marginBottom: "8px" }}>
+            사원 정보를 찾을 수 없습니다.
+          </p>
+          <p style={{ fontSize: "14px", color: "var(--color-text-secondary)" }}>
+            사원 ID: {params?.id || "없음"}
+          </p>
+        </div>
       </Container>
     );
   }

@@ -152,12 +152,17 @@ const EmployeeTable = ({ employees, onEmployeeClick }: EmployeeTableProps) => {
               >
                 <TableCell>{employee.emp_id || "-"}</TableCell>
                 <TableCell>
-                  <Link
-                    href={`/employees/${employee.emp_id}`}
-                    style={{ color: "inherit", textDecoration: "none" }}
-                  >
-                    {employee.emp_nm || "-"}
-                  </Link>
+                  {employee.emp_id ? (
+                    <Link
+                      href={`/employees/${employee.emp_id}`}
+                      style={{ color: "inherit", textDecoration: "none" }}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {employee.emp_nm || "-"}
+                    </Link>
+                  ) : (
+                    <span>{employee.emp_nm || "-"}</span>
+                  )}
                 </TableCell>
                 <TableCell>{employee.dept_id || "-"}</TableCell>
                 <TableCell>{employee.grade_id || "-"}</TableCell>
@@ -182,4 +187,5 @@ const EmployeeTable = ({ employees, onEmployeeClick }: EmployeeTableProps) => {
 };
 
 export default EmployeeTable;
+
 
