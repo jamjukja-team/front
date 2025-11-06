@@ -18,6 +18,7 @@ const SidebarContainer = styled.aside<{ $isOpen: boolean }>`
   z-index: 100;
   box-shadow: 2px 0 2px rgba(0, 0, 0, 0.2);
   position: fixed;
+  overflow-x: hidden;
 
   @media (min-width: 769px) {
     width: 260px;

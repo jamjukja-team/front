@@ -3,142 +3,173 @@
 import styled from "styled-components";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 import { CalendarIcon, ClockIcon, FileTextIcon, UserIcon } from "@/utils/icons";
 import { useAuthStore } from "@/stores/authStore";
+import ProfileDialog from "@/components/Dialog/ProfileDialog";
 
 const Aside = styled.aside`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
 `;
 
 const LogoBar = styled.div`
-  padding: 24px; /* p-6 */
+  padding: 20px 30px;
 `;
 
 const LogoRow = styled.div`
   display: flex;
   align-items: center;
-  gap: 0px; /* gap-3 */
+  gap: 16px;
 `;
 
 const LogoMark = styled.div`
-  width: 60px; 
-  height: 60px; 
+  width: 75px; 
+  height: 75px; 
   border-radius: 50%;
-  border: 2px solid #00C2C4; 
+  background-color: var(--color-gray-200);
   display: flex; 
   align-items: center; 
   justify-content: center;
-  span { font-size: 1.25rem; font-weight: 600; } 
+  flex-shrink: 0;
+  span { 
+    font-size: 1.5rem; 
+    font-weight: 600;
+    color: var(--color-text);
+  } 
 `;
 
 const LogoText = styled.span`
-  font-size: 1.25rem; /* text-xl */
-  font-weight: 700;   /* font-bold */
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text);
 `;
 
 const Nav = styled.nav`
   flex: 1;
-  padding: 16px;          /* p-4 */
+  padding: 0 30px;
   overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
 `;
 
 const SectionRow = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;            /* gap-3 */
-  padding: 8px 12px;    /* px-3 py-2 */
-  color: #374151;       /* text-gray-700 */
-  margin-top: 16px;     /* mt-4 (맨 위 섹션은 필요 시 제거) */
+  gap: 13px;
+  padding: 0;
+  color: var(--color-text);
+  margin-top: 30px;
   &:first-child { margin-top: 0; }
 `;
 
 const SectionTitle = styled.span`
-  font-weight: 500; /* font-medium */
+  font-size: 16px;
+  font-weight: 500;
 `;
 
 const SubList = styled.div`
-  margin-left: 32px; /* ml-8 */
+  margin-left: 0;
+  margin-top: 8px;
   display: flex;
   flex-direction: column;
-  gap: 4px; /* space-y-1 */
+  gap: 0;
 `;
 
 const NavItem = styled(Link) <{ $active?: boolean }>`
-  display: block;
-  padding: 8px 12px;     
-  font-size: 0.875rem;  
-  border-radius: 6px;    
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 9px 0 9px 37px;     
+  font-size: 14px;  
+  border-radius: 0;    
   text-decoration: none;
-  color: ${({ $active }) => ($active ? "#0B898A" : "#000000")}; /* active: --color-primary-active / default: gray-600 */
-  background: ${({ $active }) => ($active ? "#D7F6F8" : "transparent")}; /* active bg */
-  font-weight: ${({ $active }) => ($active ? "600" : "400")}; /* active: font-semibold / default: font-normal */
+  color: ${({ $active }) => ($active ? "#0B898A" : "#000000")};
+  background: ${({ $active }) => ($active ? "transparent" : "transparent")};
+  font-weight: ${({ $active }) => ($active ? "600" : "400")};
 
   &:hover {
-    background: ${({ $active }) => ($active ? "#D7F6F8" : "#f3f4f6")}; /* hover:bg-gray-100 */
+    background: transparent;
+    color: ${({ $active }) => ($active ? "#0B898A" : "#4b5563")};
+  }
+`;
+
+const DashboardItem = styled(Link) <{ $active?: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 9px 0 9px 37px;
+  font-size: 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: ${({ $active }) => ($active ? "#0B898A" : "#000000")};
+  background: ${({ $active }) => ($active ? "#D7F6F8" : "transparent")};
+  font-weight: ${({ $active }) => ($active ? "600" : "400")};
+  margin-top: 8px;
+  max-width: 100%;
+  box-sizing: border-box;
+
+  &:hover {
+    background: ${({ $active }) => ($active ? "#D7F6F8" : "#f3f4f6")};
   }
 `;
 
 const FooterBar = styled.div`
-  padding: 28px;
-  // border-top: 1px solid var(--color-border, #e5e7eb);
+  padding: 0 43px 0 43px;
   margin-top: auto;
+  margin-bottom: 40px;
   display: flex;
   align-items: center;
-  gap : 16px;
-  justify-content: flex-start;
+  justify-content: center;
 `;
 
-const Avatar = styled.div`
+const Avatar = styled.button`
   width: 60px; 
   height: 60px;
   border-radius: 50%;
-  background: #d1d5db; /* bg-gray-300 */
-`;
-
-const ProfileCard = styled.div`
+  background: #d1d5db;
+  flex-shrink: 0;
+  border: none;
+  cursor: pointer;
+  padding: 0;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  gap: 4px; /* gap-3 */
-`;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
 
-const PasswordBtn = styled.button`
-  font-size: 0.875rem; /* text-sm */
-  color: #4b5563;      /* text-gray-600 */
-  cursor: pointer;
-  background: transparent;
-  border: 0;
-  padding: 0;
-  margin-bottom: 8px;
-  text-align: left;
-  text-decoration: underline;
+  &:hover {
+    transform: scale(1.05);
+  }
 
-  &:hover { color: #111827; } /* hover:text-gray-900 */
-`;
-
-const LogoutBtn = styled.button`
-  font-size: 0.875rem; /* text-sm */
-  color: #4b5563;      /* text-gray-600 */
-  cursor: pointer;
-  background: transparent;
-  border: 0;
-  padding: 0;
-  text-align: left;
-  text-decoration: underline;
-
-  &:hover { color: #111827; } /* hover:text-gray-900 */
+  &:active {
+    transform: scale(0.95);
+  }
 `;
 
 export default function Sidebar() {
   const pathname = usePathname();
   const isAdmin = useAuthStore((s) => s.isAdmin);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const isActive = (path: string) => {
     if (path === "/" && pathname === "/") return true;
     if (path !== "/" && pathname.startsWith(path)) return true;
     return false;
+  };
+
+  const handlePasswordChange = () => {
+    setIsDialogOpen(false);
+    // TODO: 비밀번호 변경 페이지로 이동 또는 모달 열기
+    console.log("비밀번호 변경");
+  };
+
+  const handleLogout = () => {
+    setIsDialogOpen(false);
+    // TODO: 로그아웃 로직 구현
+    console.log("로그아웃");
   };
 
   return (
@@ -158,9 +189,9 @@ export default function Sidebar() {
           <CalendarIcon />
           <SectionTitle>대시보드</SectionTitle>
         </SectionRow>
-        <SubList>
-          <NavItem href="/" $active={isActive("/") && pathname === "/"}>대시보드</NavItem>
-        </SubList>
+        <DashboardItem href="/" $active={isActive("/") && pathname === "/"}>
+          <span>대시보드</span>
+        </DashboardItem>
 
         {/* 근태 관리 */}
         <SectionRow style={{ marginTop: 16 }}>
@@ -199,8 +230,8 @@ export default function Sidebar() {
                   사원 등록
                 </NavItem>
                 <NavItem
-                  href="/employees/1"
-                  $active={pathname.startsWith("/employees/") && !pathname.includes("/register")}
+                  href="/employees"
+                  $active={pathname === "/employees" || (pathname.startsWith("/employees/") && pathname !== "/employees")}
                 >
                   사원 조회
                 </NavItem>
@@ -212,12 +243,18 @@ export default function Sidebar() {
 
       {/* User Profile */}
       <FooterBar>
-        <Avatar />
-        <ProfileCard>
-          <PasswordBtn>비밀번호 재설정</PasswordBtn>
-          <LogoutBtn>로그아웃</LogoutBtn>
-        </ProfileCard>
+        <Avatar onClick={() => setIsDialogOpen(true)} />
       </FooterBar>
+
+      {/* Profile Dialog */}
+      <ProfileDialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        userName="김희은"
+        status="working"
+        onPasswordChange={handlePasswordChange}
+        onLogout={handleLogout}
+      />
     </Aside>
   );
 }

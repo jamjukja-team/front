@@ -6,27 +6,36 @@ interface ButtonProps {
   type: "button" | "submit" | "reset";
   onClick?: () => void;
   onSubmit?: () => void;
+  disabled?: boolean;
   children?: React.ReactNode;
-  bg? : string;
+  bg?: string;
   full?: boolean;
   color?: string;
 }
 
-const StyledButton = styled.button<{ $bg?: string, $full?: boolean; $color?: string}>`
-   width: ${({ $full }) => ($full ? "100%" : "auto")};
+const StyledButton = styled.button<{
+  $bg?: string;
+  $full?: boolean;
+  $color?: string;
+}>`
+  width: ${({ $full }) => ($full ? "100%" : "auto")};
   padding: 8px 18px;
   font-size: 16px;
   font-weight: 600;
   line-height: 1.5;
   color: ${({ $color }) =>
-      $color === "white" ? "#fff" :
-      $color === "black" ? "#000" :
-      $color || "#fff"};
+    $color === "white"
+      ? "#fff"
+      : $color === "black"
+      ? "#000"
+      : $color || "#fff"};
 
   background-color: ${({ $bg }) =>
-      $bg === "primary" ? "#00C2C4" :
-      $bg === "danger" ? "#F26B63" :
-      $bg || "#00C2C4"};
+    $bg === "primary"
+      ? "#00C2C4"
+      : $bg === "danger"
+      ? "#F26B63"
+      : $bg || "#00C2C4"};
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -52,9 +61,26 @@ const StyledButton = styled.button<{ $bg?: string, $full?: boolean; $color?: str
   }
 `;
 
-const Button = ({ type, onClick, onSubmit, children }: ButtonProps) => {
+const Button = ({
+  type,
+  onClick,
+  onSubmit,
+  disabled,
+  bg,
+  full,
+  color,
+  children,
+}: ButtonProps) => {
   return (
-    <StyledButton type={type} onClick={onClick} onSubmit={onSubmit}>
+    <StyledButton
+      type={type}
+      onClick={onClick}
+      onSubmit={onSubmit}
+      disabled={disabled}
+      $bg={bg}
+      $full={full}
+      $color={color}
+    >
       {children}
     </StyledButton>
   );
