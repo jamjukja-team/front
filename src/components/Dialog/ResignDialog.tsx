@@ -188,4 +188,3 @@ const ResignDialog = ({ isOpen, onClose, onConfirm }: ResignDialogProps) => {
 };
 
 export default ResignDialog;
-

@@ -100,3 +100,4 @@ const ProfileUpload = ({ value, onChange }: ProfileUploadProps) => {
 
 export default ProfileUpload;
 
+
