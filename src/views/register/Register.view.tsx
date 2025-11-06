@@ -11,19 +11,9 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import ConfirmDialog from "@/components/Dialog/ConfirmDialog";
 import SuccessDialog from "@/components/Dialog/SuccessDialog";
+import { registerEmployee } from "@/services/employeeService";
 
-interface RegisterViewProps {
-  registerFn: (data: {
-    email: string;
-    password: string;
-    emp_nm: string;
-    birth_date: string;
-    hire_date: string;
-    dept_id: string;
-    grade_id: string;
-    photo: string;
-  }) => void;
-}
+interface RegisterViewProps {}
 
 interface RegisterFormData {
   email: string;
@@ -98,7 +88,7 @@ const RegisterButton = styled(Button)`
   font-weight: 500;
 `;
 
-const RegisterView = ({ registerFn }: RegisterViewProps) => {
+const RegisterView = ({}: RegisterViewProps) => {
   const {
     handleSubmit,
     register,
@@ -111,6 +101,7 @@ const RegisterView = ({ registerFn }: RegisterViewProps) => {
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [formData, setFormData] = useState<RegisterFormData | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onSubmit = (data: RegisterFormData) => {
     // 필수 필드 검증
@@ -121,20 +112,30 @@ const RegisterView = ({ registerFn }: RegisterViewProps) => {
     setShowConfirmDialog(true);
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!formData) return;
-    registerFn({
-      email: formData.email,
-      password: formData.password || "",
-      emp_nm: formData.emp_nm,
-      birth_date: formData.birth_date,
-      hire_date: formData.hire_date,
-      dept_id: formData.dept_id,
-      grade_id: formData.grade_id,
-      photo: formData.photo || "",
-    });
-    setShowConfirmDialog(false);
-    setShowSuccessDialog(true);
+    
+    setIsSubmitting(true);
+    try {
+      await registerEmployee({
+        email: formData.email,
+        password: formData.password || "",
+        emp_nm: formData.emp_nm,
+        birth_date: formData.birth_date,
+        hire_date: formData.hire_date,
+        dept_id: formData.dept_id,
+        grade_id: formData.grade_id,
+        photo: formData.photo || "",
+      });
+      setShowConfirmDialog(false);
+      setShowSuccessDialog(true);
+    } catch (error) {
+      console.error("Register error:", error);
+      // TODO: 에러 메시지 표시
+      setShowConfirmDialog(false);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // 날짜 형식 검증 (YYYY.MM.DD)
