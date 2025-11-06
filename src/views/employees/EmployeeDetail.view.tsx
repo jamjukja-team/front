@@ -5,10 +5,10 @@ import { useState } from "react";
 import Link from "next/link";
 import Button from "@/components/Button/Button";
 import { Employee } from "@/types/api";
+import { AccountCircleIcon } from "@/utils/icons";
 
 interface EmployeeDetailViewProps {
-  employee: Employee | null | undefined;
-  employeeId: string;
+  employee?: Employee;
 }
 
 const Container = styled.main`
@@ -40,15 +40,16 @@ const ProfileSection = styled.div`
   margin-bottom: 32px;
 `;
 
-const Avatar = styled.div`
+const AvatarContainer = styled.div`
   width: 130px;
   height: 130px;
   border-radius: 50%;
-  background-color: #d1d5db;
+  background: #d1d5db;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  color: #9ca3af;
 `;
 
 const ProfileInfo = styled.div`
@@ -73,7 +74,7 @@ const StatusBadge = styled.span<{ $status: string }>`
   display: inline-block;
   padding: 4px 12px;
   border-radius: 12px;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 400;
   background-color: ${({ $status }) => {
     switch ($status) {
@@ -97,21 +98,10 @@ const StatusBadge = styled.span<{ $status: string }>`
   }};
 `;
 
-const InfoRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 4px;
+const InfoText = styled.p`
   font-size: 14px;
   color: var(--color-text);
-`;
-
-const InfoLabel = styled.span`
-  font-weight: 400;
-`;
-
-const InfoValue = styled.span`
-  font-weight: 400;
+  margin: 4px 0;
 `;
 
 const DetailsSection = styled.div`
@@ -127,53 +117,17 @@ const DetailCard = styled.div`
   border-radius: 8px;
 `;
 
-const DetailRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-  font-size: 14px;
-  color: var(--color-text);
-
-  &:last-child {
-    margin-bottom: 0;
-  }
-`;
-
-const DetailLabel = styled.span`
-  font-weight: 400;
-`;
-
-const DetailValue = styled.span`
-  font-weight: 400;
-`;
-
-const LeaveStatusSection = styled.div`
-  background-color: var(--color-background);
-  padding: 20px;
-  border-radius: 8px;
-  margin-bottom: 32px;
-`;
-
-const SectionTitle = styled.h3`
+const DetailTitle = styled.h3`
   font-size: 18px;
   font-weight: 600;
   color: var(--color-text);
   margin: 0 0 16px 0;
 `;
 
-const LeaveStatusGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  overflow: hidden;
-`;
-
-const LeaveStatusRow = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+const DetailItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
   border-bottom: 1px solid var(--color-border);
 
   &:last-child {
@@ -181,21 +135,15 @@ const LeaveStatusRow = styled.div`
   }
 `;
 
-const LeaveStatusCell = styled.div`
-  padding: 12px;
-  text-align: center;
+const DetailLabel = styled.span`
   font-size: 14px;
   color: var(--color-text);
-  border-right: 1px solid var(--color-border);
-
-  &:last-child {
-    border-right: none;
-  }
 `;
 
-const LeaveStatusHeader = styled(LeaveStatusCell)`
-  font-weight: 600;
-  background-color: var(--color-gray-50);
+const DetailValue = styled.span`
+  font-size: 14px;
+  color: var(--color-text);
+  font-weight: 400;
 `;
 
 const ActionSection = styled.div`
@@ -213,122 +161,108 @@ const ActionButton = styled(Button)`
   font-weight: 500;
 `;
 
-const DeactivateButton = styled(ActionButton)`
-  background-color: transparent;
-  color: var(--color-text);
-  border: 1px solid #d1d5db;
-`;
-
-const ResignButton = styled(ActionButton)`
-  background-color: transparent;
-  color: var(--color-text);
-  border: 1px solid #d1d5db;
-`;
-
 const ResendLink = styled(Link)`
   font-size: 14px;
   color: var(--color-primary);
   text-decoration: none;
+  margin-top: 8px;
+  display: inline-block;
 
   &:hover {
     text-decoration: underline;
   }
 `;
 
-const EmployeeDetailView = ({
-  employee,
-  employeeId,
-}: EmployeeDetailViewProps) => {
-  const [isResigned, setIsResigned] = useState(false);
+const EmployeeDetailView = ({ employee }: EmployeeDetailViewProps) => {
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeactivateModalOpen, setIsDeactivateModalOpen] = useState(false);
+  const [isResignModalOpen, setIsResignModalOpen] = useState(false);
 
   if (!employee) {
     return (
       <Container>
-        <BackLink href="/employees">← 사원 상세</BackLink>
-        <div>사원을 찾을 수 없습니다.</div>
+        <div>사원 정보를 찾을 수 없습니다.</div>
       </Container>
     );
   }
 
-  const status = isResigned ? "퇴직" : "재직";
+  // 근속기간 계산 (간단한 예시)
+  const calculateServicePeriod = () => {
+    if (!employee.hire_date) return "0일";
+    // 실제로는 날짜 계산 로직 필요
+    return "1일";
+  };
 
   return (
     <Container>
       <BackLink href="/employees">← 사원 상세</BackLink>
 
       <ProfileSection>
-        <Avatar>
-          {employee.photo ? (
-            <img
-              src={employee.photo}
-              alt={employee.emp_nm}
-              style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }}
-            />
-          ) : (
-            <span style={{ fontSize: "48px", color: "#9ca3af" }}>👤</span>
-          )}
-        </Avatar>
+        <AvatarContainer>
+          <AccountCircleIcon />
+        </AvatarContainer>
         <ProfileInfo>
           <NameRow>
             <Name>{employee.emp_nm || "-"}</Name>
-            <StatusBadge $status={status}>{status}</StatusBadge>
+            <StatusBadge $status="재직">재직</StatusBadge>
           </NameRow>
-          <InfoRow>
-            <InfoLabel>생년월일</InfoLabel>
-            <InfoValue>{employee.birth_date || "-"}</InfoValue>
-          </InfoRow>
-          <InfoRow>
-            <InfoLabel>직급/부서</InfoLabel>
-            <InfoValue>
-              {employee.dept_id || "-"} / {employee.grade_id || "-"}
-            </InfoValue>
-          </InfoRow>
+          <InfoText>생년월일 {employee.birth_date || "-"}</InfoText>
+          <InfoText>직급/부서 {employee.grade_id || "-"} / {employee.dept_id || "-"}</InfoText>
         </ProfileInfo>
       </ProfileSection>
 
       <DetailsSection>
         <DetailCard>
-          <DetailRow>
+          <DetailTitle>기본 정보</DetailTitle>
+          <DetailItem>
             <DetailLabel>입사일</DetailLabel>
             <DetailValue>{employee.hire_date || "-"}</DetailValue>
-          </DetailRow>
-          <DetailRow>
+          </DetailItem>
+          <DetailItem>
             <DetailLabel>근속기간</DetailLabel>
-            <DetailValue>1일</DetailValue>
-          </DetailRow>
+            <DetailValue>{calculateServicePeriod()}</DetailValue>
+          </DetailItem>
         </DetailCard>
+
         <DetailCard>
-          <DetailRow>
+          <DetailTitle>연락처</DetailTitle>
+          <DetailItem>
             <DetailLabel>연락처</DetailLabel>
-            <DetailValue>010-9160-2600</DetailValue>
-          </DetailRow>
-          <DetailRow>
+            <DetailValue>{employee.email || "-"}</DetailValue>
+          </DetailItem>
+          <DetailItem>
             <DetailLabel>이메일</DetailLabel>
             <DetailValue>{employee.email || "-"}</DetailValue>
-          </DetailRow>
+          </DetailItem>
         </DetailCard>
       </DetailsSection>
 
-      <LeaveStatusSection>
-        <SectionTitle>연차 현황</SectionTitle>
-        <LeaveStatusGrid>
-          <LeaveStatusRow>
-            <LeaveStatusHeader>총 연차</LeaveStatusHeader>
-            <LeaveStatusHeader>사용 연차</LeaveStatusHeader>
-            <LeaveStatusHeader>잔여 연차</LeaveStatusHeader>
-          </LeaveStatusRow>
-          <LeaveStatusRow>
-            <LeaveStatusCell>13일</LeaveStatusCell>
-            <LeaveStatusCell>0일</LeaveStatusCell>
-            <LeaveStatusCell>13일</LeaveStatusCell>
-          </LeaveStatusRow>
-        </LeaveStatusGrid>
-      </LeaveStatusSection>
+      <DetailCard>
+        <DetailTitle>연차 현황</DetailTitle>
+        <DetailItem>
+          <DetailLabel>총 연차</DetailLabel>
+          <DetailValue>13일</DetailValue>
+        </DetailItem>
+        <DetailItem>
+          <DetailLabel>사용 연차</DetailLabel>
+          <DetailValue>0일</DetailValue>
+        </DetailItem>
+        <DetailItem>
+          <DetailLabel>잔여 연차</DetailLabel>
+          <DetailValue>13일</DetailValue>
+        </DetailItem>
+      </DetailCard>
 
       <ActionSection>
-        <ActionButton>정보 수정</ActionButton>
-        <DeactivateButton>비활성화</DeactivateButton>
-        <ResignButton>퇴직처리</ResignButton>
+        <ActionButton onClick={() => setIsEditModalOpen(true)}>
+          정보 수정
+        </ActionButton>
+        <ActionButton onClick={() => setIsDeactivateModalOpen(true)}>
+          비활성화
+        </ActionButton>
+        <ActionButton onClick={() => setIsResignModalOpen(true)}>
+          퇴직처리
+        </ActionButton>
       </ActionSection>
 
       <ResendLink href="#">초대 메일 재발송</ResendLink>
@@ -337,4 +271,3 @@ const EmployeeDetailView = ({
 };
 
 export default EmployeeDetailView;
-
