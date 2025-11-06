@@ -4,6 +4,9 @@ import styled from "styled-components";
 import { useState } from "react";
 import Link from "next/link";
 import Button from "@/components/Button/Button";
+import DeactivateDialog from "@/components/Dialog/DeactivateDialog";
+import ResendInviteDialog from "@/components/Dialog/ResendInviteDialog";
+import ResignDialog from "@/components/Dialog/ResignDialog";
 import { Employee } from "@/types/api";
 import { AccountCircleIcon } from "@/utils/icons";
 
@@ -177,6 +180,22 @@ const EmployeeDetailView = ({ employee }: EmployeeDetailViewProps) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeactivateModalOpen, setIsDeactivateModalOpen] = useState(false);
   const [isResignModalOpen, setIsResignModalOpen] = useState(false);
+  const [isResendInviteModalOpen, setIsResendInviteModalOpen] = useState(false);
+
+  const handleDeactivate = () => {
+    // TODO: 비활성화 API 호출
+    console.log("비활성화:", employee?.emp_id);
+  };
+
+  const handleResign = (resignDate: string, reason: string) => {
+    // TODO: 퇴직처리 API 호출
+    console.log("퇴직처리:", employee?.emp_id, resignDate, reason);
+  };
+
+  const handleResendInvite = () => {
+    // TODO: 초대 메일 재발송 API 호출
+    console.log("초대 메일 재발송:", employee?.email);
+  };
 
   if (!employee) {
     return (
@@ -265,7 +284,36 @@ const EmployeeDetailView = ({ employee }: EmployeeDetailViewProps) => {
         </ActionButton>
       </ActionSection>
 
-      <ResendLink href="#">초대 메일 재발송</ResendLink>
+      <ResendLink
+        href="#"
+        onClick={(e) => {
+          e.preventDefault();
+          setIsResendInviteModalOpen(true);
+        }}
+      >
+        초대 메일 재발송
+      </ResendLink>
+
+      {/* 모달들 */}
+      <DeactivateDialog
+        isOpen={isDeactivateModalOpen}
+        onClose={() => setIsDeactivateModalOpen(false)}
+        onConfirm={handleDeactivate}
+        email={employee.email}
+      />
+
+      <ResendInviteDialog
+        isOpen={isResendInviteModalOpen}
+        onClose={() => setIsResendInviteModalOpen(false)}
+        onConfirm={handleResendInvite}
+        email={employee.email || ""}
+      />
+
+      <ResignDialog
+        isOpen={isResignModalOpen}
+        onClose={() => setIsResignModalOpen(false)}
+        onConfirm={handleResign}
+      />
     </Container>
   );
 };
