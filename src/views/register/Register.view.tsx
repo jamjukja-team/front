@@ -9,6 +9,8 @@ import DateInput from "@/components/Input/DateInput/DateInput";
 import Select from "@/components/Input/Select/Select";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import ConfirmDialog from "@/components/Dialog/ConfirmDialog";
+import SuccessDialog from "@/components/Dialog/SuccessDialog";
 
 interface RegisterViewProps {
   registerFn: (data: {
@@ -106,23 +108,33 @@ const RegisterView = ({ registerFn }: RegisterViewProps) => {
   } = useForm<RegisterFormData>();
 
   const [profileFile, setProfileFile] = useState<File | null>(null);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [formData, setFormData] = useState<RegisterFormData | null>(null);
 
   const onSubmit = (data: RegisterFormData) => {
-    const { passwordConfirm, phone, ...registerData } = data;
     // 필수 필드 검증
     if (!data.emp_nm || !data.birth_date || !data.hire_date || !data.dept_id || !data.grade_id || !data.email) {
       return;
     }
+    setFormData(data);
+    setShowConfirmDialog(true);
+  };
+
+  const handleConfirm = () => {
+    if (!formData) return;
     registerFn({
-      email: data.email,
-      password: data.password || "",
-      emp_nm: data.emp_nm,
-      birth_date: data.birth_date,
-      hire_date: data.hire_date,
-      dept_id: data.dept_id,
-      grade_id: data.grade_id,
-      photo: data.photo || "",
+      email: formData.email,
+      password: formData.password || "",
+      emp_nm: formData.emp_nm,
+      birth_date: formData.birth_date,
+      hire_date: formData.hire_date,
+      dept_id: formData.dept_id,
+      grade_id: formData.grade_id,
+      photo: formData.photo || "",
     });
+    setShowConfirmDialog(false);
+    setShowSuccessDialog(true);
   };
 
   // 날짜 형식 검증 (YYYY.MM.DD)
@@ -346,6 +358,23 @@ const RegisterView = ({ registerFn }: RegisterViewProps) => {
           <RegisterButton type="submit">등록하기</RegisterButton>
         </FormSection>
       </RegisterForm>
+
+      {/* 확인 모달 */}
+      <ConfirmDialog
+        isOpen={showConfirmDialog}
+        onClose={() => setShowConfirmDialog(false)}
+        message="해당 정보로 사원 등록을 하시겠습니까?"
+        confirmText="예"
+        cancelText="아니오"
+        onConfirm={handleConfirm}
+      />
+
+      {/* 성공 모달 */}
+      <SuccessDialog
+        isOpen={showSuccessDialog}
+        onClose={() => setShowSuccessDialog(false)}
+        message={`사원 등록이 완료되었습니다.\n${formData?.email || ""}으로 초대 메일이 발송되었습니다.`}
+      />
     </RegisterContainer>
   );
 };
