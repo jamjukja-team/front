@@ -25,8 +25,17 @@ export const registerEmployee = async (
  * @returns 사원 목록 응답 데이터
  */
 export const getEmployees = async (): Promise<EmployeesResponse> => {
-  const response = await apiClient.instance.get<EmployeesResponse>(
-    "/api/hr/employees"
-  );
-  return response.data;
+  try {
+    const response = await apiClient.instance.get<EmployeesResponse>(
+      "/api/hr/employees"
+    );
+    if (!response || !response.data) {
+      throw new Error("Invalid response from server");
+    }
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch employees:", error);
+    // 기본값 반환
+    return { employees: [] };
+  }
 };
