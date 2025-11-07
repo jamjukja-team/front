@@ -55,3 +55,18 @@ export interface Employee {
 export interface EmployeesResponse {
   employees: Employee[];
 }
+
+export interface Attendance {
+  emp_id?: number;
+  emp_nm?: string;
+  date: string;
+  check_in: string;
+  check_out: string;
+  work_hours: string;
+  status: string;
+  remarks: string;
+}
+
+export interface AttendancesResponse {
+  attendances: Attendance[];
+}
