@@ -6,7 +6,7 @@ import { LoginRequest, LoginResponse } from "@/types/api";
  * @param loginData 로그인 요청 데이터
  * @returns 로그인 응답 데이터
  */
-export const login = async (
+export const postLogin = async (
   loginData: LoginRequest
 ): Promise<LoginResponse> => {
   const response = await apiClient.instance.post<LoginResponse>(

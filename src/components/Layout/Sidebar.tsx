@@ -18,6 +18,7 @@ const Aside = styled.aside`
 
 const LogoBar = styled.div`
   padding: 20px 30px;
+  margin-bottom: 30px;
 `;
 
 const LogoRow = styled.div`
@@ -62,7 +63,7 @@ const SectionRow = styled.div`
   gap: 13px;
   padding: 0;
   color: var(--color-text);
-  margin-top: 30px;
+  margin-top: 40px;
   &:first-child { margin-top: 0; }
 `;
 
@@ -73,7 +74,7 @@ const SectionTitle = styled.span`
 
 const SubList = styled.div`
   margin-left: 0;
-  margin-top: 8px;
+  margin-top: 10px;
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -85,34 +86,13 @@ const NavItem = styled(Link) <{ $active?: boolean }>`
   gap: 13px;
   padding: 9px 0 9px 37px;     
   font-size: 14px;  
-  border-radius: 0;    
-  text-decoration: none;
-  color: ${({ $active }) => ($active ? "#0B898A" : "#000000")};
-  background: ${({ $active }) => ($active ? "transparent" : "transparent")};
-  font-weight: ${({ $active }) => ($active ? "600" : "400")};
-
-  &:hover {
-    background: transparent;
-    color: ${({ $active }) => ($active ? "#0B898A" : "#4b5563")};
-  }
-`;
-
-const DashboardItem = styled(Link) <{ $active?: boolean }>`
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  padding: 9px 0 9px 37px;
-  font-size: 14px;
-  border-radius: 8px;
+  border-radius: 8px; 
   text-decoration: none;
   color: ${({ $active }) => ($active ? "#0B898A" : "#000000")};
   background: ${({ $active }) => ($active ? "#D7F6F8" : "transparent")};
   font-weight: ${({ $active }) => ($active ? "600" : "400")};
-  margin-top: 8px;
-  max-width: 100%;
-  box-sizing: border-box;
 
-  &:hover {
+ &:hover {
     background: ${({ $active }) => ($active ? "#D7F6F8" : "#f3f4f6")};
   }
 `;
@@ -123,7 +103,7 @@ const FooterBar = styled.div`
   margin-bottom: 40px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 `;
 
 const Avatar = styled.button`
@@ -189,9 +169,9 @@ export default function Sidebar() {
           <CalendarIcon />
           <SectionTitle>대시보드</SectionTitle>
         </SectionRow>
-        <DashboardItem href="/" $active={isActive("/") && pathname === "/"}>
-          <span>대시보드</span>
-        </DashboardItem>
+        <SubList>
+          <NavItem href="/" $active={isActive("/") && pathname === "/"}>대시보드</NavItem>
+        </SubList>
 
         {/* 근태 관리 */}
         <SectionRow style={{ marginTop: 16 }}>

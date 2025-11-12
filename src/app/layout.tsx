@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "react-datepicker/dist/react-datepicker.css";
+import Providers from "./providers";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -24,7 +26,9 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
+        <Providers>
           {children}
+        </Providers>
       </body>
     </html>
   );

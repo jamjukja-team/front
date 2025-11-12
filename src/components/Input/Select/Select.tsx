@@ -26,8 +26,8 @@ const SelectContainer = styled.div`
 const SelectButton = styled.button<{ $hasError?: boolean; $isOpen?: boolean }>`
   width: 100%;
   height: 40px;
-  padding: 0 40px 0 12px;
-  border: 1px solid ${({ $hasError }) => ($hasError ? "#f26b63" : "#d1d5db")};
+  padding: 0 12px;
+  border: 1px solid ${({ $hasError }) => ($hasError ? "#f26b63" : "#e5e7eb")};
   border-radius: 8px;
   font-size: 14px;
   color: ${({ value }) => (value ? "var(--color-text)" : "var(--color-text-secondary)")};

@@ -46,10 +46,14 @@ const MainContainer = styled.main`
   background-color: var(--color-gray-50);
   padding-top: 80px;
   padding-left: 40px;
+  padding-right : 40px;
+  padding-bottom : 40px;
 
   transition: margin-left 0.3s ease;
   @media (max-width: 768px) {
-    margin-left: 0; 
+    margin-left: 0;
+   padding-left : 20px;
+   padding-right : 20px;
 }
 `;
 
@@ -71,22 +75,22 @@ const HamburgerButton = styled.button`
 `;
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-   const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const ready = useAuthHydrated(); // persist 복원 상태 확인
 
-   if (!ready) {
+  if (!ready) {
     return null; // 복원 전에는 아무것도 렌더링하지 않음(혹은 로딩 스피너) 
-   }
+  }
   return (
     // 전체
     <LayoutWrapper>
-        {/* 햄버거 버튼 */}
+      {/* 햄버거 버튼 */}
       <HamburgerButton
         className={isOpen ? "open" : ""}
         onClick={() => setIsOpen((prev) => !prev)}
         aria-label="Toggle Sidebar"
       >
-       {isOpen ? <CloseIcon/> : <HamburgerIcon />}
+        {isOpen ? <CloseIcon /> : <HamburgerIcon />}
       </HamburgerButton>
 
       {/* 사이드바 */}
