@@ -5,9 +5,11 @@ import Link from "next/link";
 import Button from "@/components/Button/Button";
 import TextInput from "@/components/Input/TextInput/TextInput";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { LoginResult } from "@/app/(auth)/login/loginAction";
 
 interface LoginViewProps {
-  loginFn: (email: string, password: string) => void;
+  loginFn: (email: string, password: string) => Promise<LoginResult>;
 }
 
 interface LoginFormData {
@@ -75,14 +77,21 @@ const RegisterLink = styled.div`
 `;
 
 const LoginView = ({ loginFn }: LoginViewProps) => {
+  const router = useRouter();
   const {
     handleSubmit,
     register,
+    getValues,
     formState: { errors },
   } = useForm<LoginFormData>();
 
-  const onSubmit = (data: LoginFormData) => {
-    loginFn(data.email, data.password);
+  const onSubmit = async (data: LoginFormData) => {
+    const response = await loginFn(data.email, data.password);
+    if (response.ok) {
+      router.push('/');
+    } else {
+      alert("로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.");
+    }
   };
 
   return (

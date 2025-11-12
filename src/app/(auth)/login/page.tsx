@@ -1,4 +1,5 @@
 import LoginView from "@/views/login/Login.view";
+import { loginAction } from "./loginAction";
 
 export default function LoginPage() {
   const login = async (email: string, password: string) => {
@@ -6,5 +7,5 @@ export default function LoginPage() {
     console.log("Login attempt:", { email, password });
   };
 
-  return <LoginView loginFn={login} />;
+  return <LoginView loginFn={loginAction} />;
 }
