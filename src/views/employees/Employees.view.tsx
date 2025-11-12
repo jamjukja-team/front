@@ -44,7 +44,7 @@ const RegisterButton = styled(Button)`
   font-weight: 500;
 `;
 
-const FilterSection = styled.div`
+export const FilterSection = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
@@ -52,27 +52,36 @@ const FilterSection = styled.div`
   flex-wrap: wrap;
 `;
 
-const FilterLabel = styled.label`
-  font-size: 14px;
+export const FilterLabel = styled.label`
+  font-size: 15px;
   font-weight: 400;
   color: var(--color-text);
   white-space: nowrap;
 `;
 
-const FilterSelect = styled.div`
+export const FilterSelect = styled.div`
   width: 96px;
 `;
 
-const SearchInput = styled.div`
+export const SearchInput = styled.div`
   flex: 1;
   min-width: 200px;
   max-width: 301px;
 `;
 
-const SearchButton = styled(Button)`
+export const SearchInputBox = styled.input`
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+`;
+
+export const SearchButton = styled(Button)`
   width: 82px;
   height: 40px;
-  background-color: #0B898A;
   color: white;
   font-size: 14px;
   font-weight: 500;
@@ -102,7 +111,7 @@ const EmployeesView = ({ initialEmployees = [] }: EmployeesViewProps) => {
   const [employees, setEmployees] = useState<Employee[]>(initialEmployees);
   const [filteredEmployees, setFilteredEmployees] = useState<Employee[]>(initialEmployees);
   const [loading, setLoading] = useState(false);
-  
+
   // 필터 상태
   const [departmentFilter, setDepartmentFilter] = useState<string>("");
   const [gradeFilter, setGradeFilter] = useState<string>("");
@@ -196,7 +205,7 @@ const EmployeesView = ({ initialEmployees = [] }: EmployeesViewProps) => {
       <Header>
         <Title>사원 조회</Title>
         <Link href="/register">
-          <RegisterButton>사원 등록</RegisterButton>
+          <RegisterButton type="button">사원 등록</RegisterButton>
         </Link>
       </Header>
 
@@ -233,7 +242,7 @@ const EmployeesView = ({ initialEmployees = [] }: EmployeesViewProps) => {
         </FilterSelect>
 
         <SearchInput>
-          <input
+          <SearchInputBox
             type="text"
             placeholder="이름 또는 이메일 검색"
             value={searchQuery}
@@ -254,7 +263,7 @@ const EmployeesView = ({ initialEmployees = [] }: EmployeesViewProps) => {
           />
         </SearchInput>
 
-        <SearchButton onClick={handleSearch}>검색</SearchButton>
+        <SearchButton type="button" onClick={handleSearch}>검색</SearchButton>
       </FilterSection>
 
       {/* 정렬 섹션 */}

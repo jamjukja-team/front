@@ -1,19 +1,12 @@
 "use client";
 
-import { RefCallback, useState } from "react";
+import React, { forwardRef, useState } from "react";
 import styled from "styled-components";
 
-interface TextInputProps {
-  type: "text" | "password" | "number" | "tel" | "email";
-  placeholder: string;
+type TextInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   showVisibilityToggle?: boolean;
-  className?: string;
   errorMessage?: string;
-  value?: string;
-  maxLength?: number;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  ref?: RefCallback<HTMLInputElement> | null;
-}
+};
 
 const InputWrapper = styled.div`
   position: relative;
@@ -21,14 +14,14 @@ const InputWrapper = styled.div`
   margin-bottom: 24px;
 `;
 
-const StyledInput = styled.input<{ isError?: boolean }>`
+const StyledInput = styled.input<{ $isError?: boolean }>`
   width: 100%;
   padding: 14px 16px;
   font-size: 16px;
   line-height: 1.5;
   color: var(--color-text);
   background-color: var(--color-background);
-  border: 1px solid ${(props) => (props.isError ? "var(--color-error)" : "var(--color-border)")};
+  border: 1px solid ${({ $isError }) => ($isError ? "var(--color-error)" : "var(--color-border)")};
   border-radius: 8px;
   outline: none;
   transition: all 0.2s ease-in-out;
@@ -59,7 +52,6 @@ const VisibilityToggleButton = styled.button`
   padding: 4px;
   color: var(--color-text-secondary);
   font-size: 14px;
-  transition: color 0.2s ease-in-out;
 
   &:hover {
     color: var(--color-text);
@@ -79,44 +71,42 @@ const ErrorMessage = styled.p`
   line-height: 1.4;
 `;
 
-const TextInput = ({
-  type,
-  placeholder,
-  showVisibilityToggle,
-  className,
-  errorMessage,
-  value,
-  maxLength,
-  onChange,
-  ref,
-}: TextInputProps) => {
-  const [inputType, setInputType] = useState(type);
-  const isError = Boolean(errorMessage);
-  const toggleVisibility = () => {
-    setInputType(inputType === "password" ? "text" : "password");
-  };
-  return (
-    <InputWrapper className={className}>
-      <StyledInput
-        onChange={onChange}
-        type={inputType}
-        placeholder={placeholder}
-        value={value}
-        maxLength={maxLength}
-        ref={ref}
-        isError={isError}
-      />
-      {showVisibilityToggle && type === "password" && (
-        <VisibilityToggleButton
-          type="button"
-          onClick={toggleVisibility}
-        >
-          {inputType === "password" ? "보기" : "숨기기"}
-        </VisibilityToggleButton>
-      )}
-      {isError && <ErrorMessage>{errorMessage}</ErrorMessage>}
-    </InputWrapper>
-  );
-};
+const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
+  ({ type = "text", placeholder, showVisibilityToggle, className, errorMessage, ...rest }, ref) => {
+    const [inputType, setInputType] = useState<"text" | "password" | "email" | "tel" | "number">(
+      (type as any) || "text"
+    );
+    const isError = Boolean(errorMessage);
 
+    const toggleVisibility = () => {
+      if (type !== "password") return;
+      setInputType((prev) => (prev === "password" ? "text" : "password"));
+    };
+
+    return (
+      <InputWrapper className={className}>
+        <StyledInput
+          ref={ref}
+          type={inputType}
+          placeholder={placeholder}
+          $isError={isError}
+          {...rest} // RHF가 준 name/onChange/onBlur/value 등 전부 그대로 연결
+        />
+        {showVisibilityToggle && type === "password" && (
+          <VisibilityToggleButton type="button" onClick={toggleVisibility}>
+            {inputType === "password" ? "보기" : "숨기기"}
+          </VisibilityToggleButton>
+        )}
+        {isError && <ErrorMessage>{errorMessage}</ErrorMessage>}
+      </InputWrapper>
+    );
+  }
+);
+
+TextInput.displayName = "TextInput";
 export default TextInput;
+
+// ref를 prop으로 받지 마세요 → forwardRef로 전달해야 RHF가 인풋을 “등록”할 수 있습니다.
+// 	RHF가 주는 name / onChange / onBlur / value / ref를 그대로 <input>에 붙이기: ...rest를 <StyledInput>에 전달.
+// 	커스텀 스타일 prop은 $isError처럼 transient prop을 사용해 DOM 경고 방지.
+// 	비밀번호 토글은 type="password"일 때만 작동하고, 기존 onChange/value를 건드리지 않도록 <input {...rest}> 구조 유지.

@@ -34,8 +34,8 @@ export type PeriodPickerProps = DayProps | MonthProps;
 
 const Shell = styled.button<{ disabled?: boolean }>`
   width: 100%;
-  height: 48px;
-  border-radius: 12px;
+  height: 40px;
+  border-radius: 8px;
   border: 1px solid var(--color-border, #e5e7eb);
   background: var(--color-background, #fff);
   display: flex;
@@ -54,8 +54,8 @@ const Shell = styled.button<{ disabled?: boolean }>`
 const LabelBox = styled.span`
   flex: 0 0 auto;
   padding: 0 12px 0 4px;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 400;
   color: var(--color-text, #111827);    
   border-right : 1px solid #e5e7eb;
 `;
@@ -63,7 +63,7 @@ const LabelBox = styled.span`
 const ValueBox = styled.span<{ $placeholder?: boolean }>`
   flex: 1 1 auto;
   padding-left: 8px;
-  font-size: 18px;
+  font-size: 15px;
   color: ${({ $placeholder }) => ($placeholder ? "#9ca3af" : "#111827")};
   white-space: nowrap;
   overflow: hidden;

@@ -56,6 +56,7 @@ export interface EmployeesResponse {
   employees: Employee[];
 }
 
+// 출퇴근 내역 데이터 타입
 export interface Attendance {
   emp_id?: number;
   emp_nm?: string;
@@ -67,6 +68,15 @@ export interface Attendance {
   remarks: string;
 }
 
+// 출퇴근 내역 조회 응답 타입
 export interface AttendancesResponse {
   attendances: Attendance[];
+}
+
+// 출퇴근 내역 요청 타입
+export interface AttendancesRequest {
+  ym: string; // "yyyy-MM" 형식
+  department?: string;
+  grade?: string;
+  name?: string;
 }

@@ -47,6 +47,7 @@ const MainContainer = styled.main`
   padding-top: 80px;
   padding-left: 40px;
   padding-right : 40px;
+  padding-bottom : 40px;
 
   transition: margin-left 0.3s ease;
   @media (max-width: 768px) {
